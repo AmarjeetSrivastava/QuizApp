@@ -159,8 +159,16 @@ final _questions = const [
   },
 ];
 */
+
 import 'package:flutter/material.dart';
 import 'answer.dart';
+
+List<Icon> _trackScore = [];
+int _questionNo = 0;
+int _totalScore = 0;
+bool answerSelected = false;
+bool endQuiz = false;
+bool correctAnswer = false;
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -170,13 +178,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  List<Icon> _trackScore = [];
-  int _questionNo = 0;
-  int _totalScore = 0;
-  bool answerSelected = false;
-  bool endQuiz = false;
-  bool correctAnswer = false;
-
   void _questionAnswered(bool answerScore) {
     setState(() {
       // answer was selected
@@ -352,7 +353,7 @@ class _HomeState extends State<Home> {
                             child: Text(
                               correctAnswer
                                   ? 'Well done, you got it right!'
-                                  : 'Wrong :/',
+                                  : 'Wrong',
                               style: TextStyle(
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.bold,
@@ -365,10 +366,16 @@ class _HomeState extends State<Home> {
                         duration: const Duration(seconds: 1),
                       ));
                     }
+                    if (endQuiz) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Results()),
+                      );
+                    }
                     _nextQuestion();
                   },
                   child: Text(
-                    endQuiz ? 'Restart Quiz' : 'Next Question',
+                    endQuiz ? 'Result' : 'Next Question',
                     style: const TextStyle(fontSize: 25, color: Colors.white),
                   ),
                 ),
@@ -386,25 +393,6 @@ class _HomeState extends State<Home> {
               height: 50,
             ),
             // if (answerSelected && !endQuiz)
-
-            if (endQuiz)
-              Container(
-                height: 100,
-                width: double.infinity,
-                color: Colors.black,
-                child: Center(
-                  child: Text(
-                    _totalScore > 4
-                        ? 'Congratulations! Your final score is: $_totalScore'
-                        : 'Your final score is: $_totalScore. Better luck next time!',
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      color: _totalScore > 4 ? Colors.green : Colors.red,
-                    ),
-                  ),
-                ),
-              ),
           ],
         ),
       ),
@@ -412,78 +400,143 @@ class _HomeState extends State<Home> {
   }
 }
 
+class Results extends StatelessWidget {
+  const Results({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.teal.shade50,
+      appBar: AppBar(
+        elevation: 6,
+        shadowColor: Colors.teal,
+        title: const Text(
+          'Results',
+          style: TextStyle(
+            color: Colors.tealAccent,
+            fontWeight: FontWeight.bold,
+            fontSize: 30,
+          ),
+        ),
+        backgroundColor: Colors.teal.shade500,
+        centerTitle: true,
+      ),
+      body: Center(
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(right: 20, left: 20),
+                child: Expanded(
+                  child: Text(
+                    _totalScore > 4
+                        ? 'Congratulations! Your final score is: $_totalScore'
+                        : 'Your final score is: $_totalScore. Better luck next time!',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 40.0,
+                      color: Colors.teal.shade900,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Material(
+                color: Colors.teal.shade600,
+                borderRadius: BorderRadius.circular(15),
+                shadowColor: Colors.teal.shade900,
+                elevation: 12,
+                child: MaterialButton(
+                    minWidth: MediaQuery.of(context).size.width,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      "Restart Quiz",
+                      style: const TextStyle(fontSize: 25, color: Colors.white),
+                    )),
+              ),
+            ]),
+      ),
+    );
+  }
+}
+
 final _questions = [
   {
-    'question':
-        'Select the correct answer?1h giu bugu gui iubm u hbmx yb ljhufh hhhhh jbj uhui ',
+    'question': 'Flutter is a:',
     'answers': [
-      {'answerText': 'this answer is true', 'score': true},
-      {'answerText': 'this answer is false', 'score': false},
-      {'answerText': 'this answer is false', 'score': false},
+      {'answerText': 'Framework', 'score': true},
+      {'answerText': 'Programming Language', 'score': false},
+      {'answerText': 'Operating System', 'score': false},
     ],
   },
   {
-    'question': 'Select the correct answer?2',
+    'question': 'A __________ is a sequence of asynchronus events',
     'answers': [
-      {'answerText': 'this answer is false', 'score': false},
-      {'answerText': 'this answer is false', 'score': false},
-      {'answerText': 'this answer is true', 'score': true},
+      {'answerText': 'Current', 'score': false},
+      {'answerText': 'Flow', 'score': false},
+      {'answerText': 'Stream', 'score': true},
     ],
   },
   {
-    'question': 'Select the correct answer?3',
+    'question': 'Flutter is a Framework of:',
     'answers': [
-      {'answerText': 'this answer is false', 'score': false},
-      {'answerText': 'this answer is false', 'score': false},
-      {'answerText': 'this answer is true', 'score': true},
+      {'answerText': 'JavaScript', 'score': false},
+      {'answerText': 'Java', 'score': false},
+      {'answerText': 'Dart', 'score': true},
     ],
   },
   {
-    'question': 'Select the correct answer?4',
+    'question': 'Dart and Flutter are products of:',
     'answers': [
-      {'answerText': 'this answer is false', 'score': false},
-      {'answerText': 'this answer is true', 'score': true},
-      {'answerText': 'this answer is false', 'score': false},
+      {'answerText': 'Apple', 'score': false},
+      {'answerText': 'Google', 'score': true},
+      {'answerText': 'BMW', 'score': false},
     ],
   },
   {
-    'question': 'Select the correct answer?5',
+    'question': 'Which one is a deprecated element in flutter',
     'answers': [
-      {'answerText': 'this answer is true', 'score': true},
-      {'answerText': 'this answer is false', 'score': false},
-      {'answerText': 'this answer is false', 'score': false},
+      {'answerText': 'RaisedButton', 'score': true},
+      {'answerText': 'SingleChildScrollView', 'score': false},
+      {'answerText': 'Container', 'score': false},
     ],
   },
   {
-    'question': 'Select the correct answer?6',
+    'question': 'When was Flutter Created',
     'answers': [
-      {'answerText': 'this answer is true', 'score': true},
-      {'answerText': 'this answer is false', 'score': false},
-      {'answerText': 'this answer is false', 'score': false},
+      {'answerText': 'May, 2017', 'score': true},
+      {'answerText': 'January, 2016', 'score': false},
+      {'answerText': 'April, 2018', 'score': false},
     ],
   },
   {
-    'question': 'Select the correct answer?7',
+    'question': 'Official Website of Flutter is:',
     'answers': [
-      {'answerText': 'this answer is true', 'score': true},
-      {'answerText': 'this answer is false', 'score': false},
-      {'answerText': 'this answer is false', 'score': false},
+      {'answerText': 'flutter.com', 'score': false},
+      {'answerText': 'flutter.dev', 'score': true},
+      {'answerText': 'flutter.net', 'score': false},
     ],
   },
   {
-    'question': 'Select the correct answer?8',
+    'question': 'Command to build apk in flutter',
     'answers': [
-      {'answerText': 'this answer is false', 'score': false},
-      {'answerText': 'this answer is false', 'score': false},
-      {'answerText': 'this answer is true', 'score': true},
+      {'answerText': 'flutter apk build', 'score': false},
+      {'answerText': 'flutter create apk', 'score': false},
+      {'answerText': 'flutter build apk', 'score': true},
     ],
   },
   {
-    'question': 'Select the correct answer?9',
+    'question': 'Command to delete build in Flutter:',
     'answers': [
-      {'answerText': 'this answer is false', 'score': false},
-      {'answerText': 'this answer is false', 'score': false},
-      {'answerText': 'this answer is true', 'score': true},
+      {'answerText': 'flutter clean build', 'score': false},
+      {'answerText': 'flutter delete build', 'score': false},
+      {'answerText': 'flutter clean', 'score': true},
     ],
   },
 ];
