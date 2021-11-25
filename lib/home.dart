@@ -1,5 +1,8 @@
+// ignore_for_file: prefer_const_constructors
+
+/*
 import 'package:flutter/material.dart';
-import 'answer.dart';
+import 'package:quiz_app/answer.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -9,23 +12,182 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  List<Icon> _trackScore = [];
-  int _questionNo = 0;
-  int _totalScore = 0;
-  bool answerSelected = false;
-  bool endQuiz = false;
-  bool correctAnswer = false;
+  final List<Icon> _scoreTracker = [];
 
+  int _questionIndex = 0;
+  int _totalScore = 0;
+  bool answerWasSelected = false;
+  bool endOfQuiz = false;
   void _questionAnswered(bool answerScore) {
     setState(() {
-  
+      answerWasSelected = true;
+      if (answerScore) {
+        _totalScore++;
+      }
+      _scoreTracker.add(answerScore
+          ? Icon(
+              Icons.check_circle,
+              color: Colors.green,
+            )
+          : Icon(
+              Icons.clear,
+              color: Colors.red,
+            ));
+
+      if (_questionIndex + 1 == _questions.length) {
+        endOfQuiz = true;
+      }
+    });
+  }
+
+  void _nextQuestion() {
+    setState(() {
+      _questionIndex++;
+      answerWasSelected = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Quiz App",
+          style: TextStyle(color: Colors.white),
+        ),
+        centerTitle: true,
+      ),
+      body: Center(
+        child: Column(
+          children: [
+            Row(
+              children: [
+                if (_scoreTracker.isEmpty)
+                  SizedBox(
+                    height: 25,
+                  ),
+                if (_scoreTracker.isNotEmpty) ..._scoreTracker
+              ],
+            ),
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+              margin: EdgeInsets.only(bottom: 10, left: 30, right: 30),
+              decoration: BoxDecoration(
+                color: Colors.pinkAccent,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Center(
+                child: Text(
+                  "${_questions[_questionIndex]['question']}",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            ...(_questions[_questionIndex]['answers']
+                    as List<Map<String, Object>>)
+                .map(
+              (answer) => Answer(
+                answerText: "${answer['answerText']}",
+                answerColor: answerWasSelected
+                    ? answer['score'] != null
+                        ? Colors.green
+                        : Colors.red
+                    : null,
+                answerTap: () {
+                  _questionAnswered(answer['score'] as bool);
+                },
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                _nextQuestion();
+              },
+              child: Text(endOfQuiz ? 'Restart Quiz' : 'Next Question'),
+              style: ElevatedButton.styleFrom(
+                  minimumSize: Size(double.infinity, 40)),
+            ),
+            Container(
+              padding: EdgeInsets.all(30),
+              child: Text(
+                "${_totalScore.toString()}/${_questions.length}",
+                style: TextStyle(
+                  fontSize: 40,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+final _questions = const [
+  {
+    'question': 'How long is New Zealand’s NinetyBeach?',
+    'answers': [
+      {'answerText': '88km, so 55 miles long.', 'score': true},
+      {'answerText': '55km, so 34 miles long.', 'score': false},
+      {'answerText': '90km, so 56 miles long.', 'score': false},
+    ],
+  },
+  {
+    'question': 'How long is New Zealand’s  Mile Beach?',
+    'answers': [
+      {'answerText': '88km, so 55 miles long.', 'score': true},
+      {'answerText': '55km, so 34 miles long.', 'score': false},
+      {'answerText': '90km, so 56 miles long.', 'score': false},
+    ],
+  },
+  {
+    'question': 'How long is NewNinety Mile Beach?',
+    'answers': [
+      {'answerText': '88km, so 55 miles long.', 'score': true},
+      {'answerText': '55km, so 34 miles long.', 'score': false},
+      {'answerText': '90km, so 56 miles long.', 'score': false},
+    ],
+  },
+];
+*/
+
+import 'package:flutter/material.dart';
+import 'answer.dart';
+
+List<Icon> _trackScore = [];
+int _questionNo = 0;
+int _totalScore = 0;
+bool answerSelected = false;
+bool endQuiz = false;
+bool correctAnswer = false;
+
+class Home extends StatefulWidget {
+  const Home({Key? key}) : super(key: key);
+
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  void _questionAnswered(bool answerScore) {
+    setState(() {
+      // answer was selected
       answerSelected = true;
-    
+      // check if answer was correct
       if (answerScore) {
         _totalScore++;
         correctAnswer = true;
       }
- 
+      // adding to the score tracker on top
       _trackScore.add(
         answerScore
             ? const Icon(
@@ -37,7 +199,7 @@ class _HomeState extends State<Home> {
                 color: Colors.red,
               ),
       );
-  
+      //when the quiz ends
       if (_questionNo + 1 == _questions.length) {
         endQuiz = true;
       }
@@ -54,7 +216,7 @@ class _HomeState extends State<Home> {
       answerSelected = false;
       correctAnswer = false;
     });
-   
+    // what happens at the end of the quiz
     if (_questionNo >= _questions.length) {
       _resetQuiz();
     }
@@ -114,7 +276,20 @@ class _HomeState extends State<Home> {
                 thickness: 2,
               ),
             ),
-           
+            /*Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(
+                    bottom: 10.0, left: 30.0, right: 30.0),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 50.0, vertical: 20.0),
+                decoration: BoxDecoration(
+                  color: Colors.purpleAccent,
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Center(
+                child: 
+              ),
+              ),*/
             SizedBox(
               height: 20,
             ),
@@ -143,11 +318,11 @@ class _HomeState extends State<Home> {
                         : Colors.red.shade200
                     : null,
                 tapAnswer: () {
-                  
+                  // if answer was already selected then nothing happens onTap
                   if (answerSelected) {
                     return;
                   }
-                
+                  //answer is being selected
                   _questionAnswered(answer['score'] as bool);
                 },
               ),
@@ -178,7 +353,7 @@ class _HomeState extends State<Home> {
                             child: Text(
                               correctAnswer
                                   ? 'Well done, you got it right!'
-                                  : 'Wrong :/',
+                                  : 'Wrong',
                               style: TextStyle(
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.bold,
@@ -191,10 +366,16 @@ class _HomeState extends State<Home> {
                         duration: const Duration(seconds: 1),
                       ));
                     }
+                    if (endQuiz) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Results()),
+                      );
+                    }
                     _nextQuestion();
                   },
                   child: Text(
-                    endQuiz ? 'Restart Quiz' : 'Next Question',
+                    endQuiz ? 'Result' : 'Next Question',
                     style: const TextStyle(fontSize: 25, color: Colors.white),
                   ),
                 ),
@@ -211,26 +392,7 @@ class _HomeState extends State<Home> {
             const SizedBox(
               height: 50,
             ),
-       
-
-            if (endQuiz)
-              Container(
-                height: 100,
-                width: double.infinity,
-                color: Colors.black,
-                child: Center(
-                  child: Text(
-                    _totalScore > 4
-                        ? 'Congratulations! Your final score is: $_totalScore'
-                        : 'Your final score is: $_totalScore. Better luck next time!',
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      color: _totalScore > 4 ? Colors.green : Colors.red,
-                    ),
-                  ),
-                ),
-              ),
+            // if (answerSelected && !endQuiz)
           ],
         ),
       ),
@@ -238,10 +400,75 @@ class _HomeState extends State<Home> {
   }
 }
 
+class Results extends StatelessWidget {
+  const Results({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.teal.shade50,
+      appBar: AppBar(
+        elevation: 6,
+        shadowColor: Colors.teal,
+        title: const Text(
+          'Results',
+          style: TextStyle(
+            color: Colors.tealAccent,
+            fontWeight: FontWeight.bold,
+            fontSize: 30,
+          ),
+        ),
+        backgroundColor: Colors.teal.shade500,
+        centerTitle: true,
+      ),
+      body: Center(
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(right: 20, left: 20),
+                child: Expanded(
+                  child: Text(
+                    _totalScore > 4
+                        ? 'Congratulations! Your final score is: $_totalScore'
+                        : 'Your final score is: $_totalScore. Better luck next time!',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 40.0,
+                      color: Colors.teal.shade900,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Material(
+                color: Colors.teal.shade600,
+                borderRadius: BorderRadius.circular(15),
+                shadowColor: Colors.teal.shade900,
+                elevation: 12,
+                child: MaterialButton(
+                    minWidth: MediaQuery.of(context).size.width,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      "Restart Quiz",
+                      style: const TextStyle(fontSize: 25, color: Colors.white),
+                    )),
+              ),
+            ]),
+      ),
+    );
+  }
+}
+
 final _questions = [
   {
-    'question':
-        'Flutter is a:',
+    'question': 'Flutter is a:',
     'answers': [
       {'answerText': 'Framework', 'score': true},
       {'answerText': 'Programming Language', 'score': false},
@@ -251,16 +478,16 @@ final _questions = [
   {
     'question': 'A __________ is a sequence of asynchronus events',
     'answers': [
-      {'answerText': 'Chennai', 'score': false},
-      {'answerText': 'Mumbai', 'score': false},
+      {'answerText': 'Current', 'score': false},
+      {'answerText': 'Flow', 'score': false},
       {'answerText': 'Stream', 'score': true},
     ],
   },
   {
     'question': 'Flutter is a Framework of:',
     'answers': [
-      {'answerText': 'Current', 'score': false},
-      {'answerText': 'Flow', 'score': false},
+      {'answerText': 'JavaScript', 'score': false},
+      {'answerText': 'Java', 'score': false},
       {'answerText': 'Dart', 'score': true},
     ],
   },
@@ -291,8 +518,8 @@ final _questions = [
   {
     'question': 'Official Website of Flutter is:',
     'answers': [
-     
-      {'answerText': 'flutter.com', 'score': false}, {'answerText': 'flutter.dev', 'score': true},
+      {'answerText': 'flutter.com', 'score': false},
+      {'answerText': 'flutter.dev', 'score': true},
       {'answerText': 'flutter.net', 'score': false},
     ],
   },
