@@ -369,7 +369,10 @@ class _HomeState extends State<Home> {
                     if (endQuiz) {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Results()),
+                        MaterialPageRoute(
+                            builder: (context) => Results(
+                                  totalScore: _totalScore,
+                                )),
                       );
                     }
                     _nextQuestion();
@@ -401,7 +404,11 @@ class _HomeState extends State<Home> {
 }
 
 class Results extends StatelessWidget {
-  const Results({Key? key}) : super(key: key);
+  final int totalScore;
+  const Results({
+    Key? key,
+    required this.totalScore,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -428,17 +435,15 @@ class Results extends StatelessWidget {
             children: [
               Padding(
                 padding: EdgeInsets.only(right: 20, left: 20),
-                child: Expanded(
-                  child: Text(
-                    _totalScore > 4
-                        ? 'Congratulations! Your final score is: $_totalScore'
-                        : 'Your final score is: $_totalScore. Better luck next time!',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 40.0,
-                      color: Colors.teal.shade900,
-                      fontWeight: FontWeight.bold,
-                    ),
+                child: Text(
+                  totalScore > 4
+                      ? 'Congratulations! Your final score is: $totalScore'
+                      : 'Your final score is: $totalScore. Better luck next time!',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 40.0,
+                    color: Colors.teal.shade900,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
